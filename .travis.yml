@@ -1,0 +1,10 @@
+before_script:
+  - CHART_PATHS=$(find ./charts -type d -maxdepth 1 -mindepth 1)
+
+script:
+  - echo "$CHART_PATHS"
+  - for dir in "${CHART_PATHS[@]}" \
+     do \
+       echo "$dir" \
+     done
+  - echo "done"
