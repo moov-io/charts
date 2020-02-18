@@ -4,6 +4,8 @@
 
 replicaCount: 1
 
+namespace:
+
 image:
   repository: moov-io/ach
   pullPolicy: Always
@@ -11,6 +13,9 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+files:
+  ttl: 60m
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -22,15 +27,12 @@ serviceAccount:
   name:
 
 podSecurityContext: {}
-  # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP

@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "ach.fullname" . }}
+  {{ with .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{ end -}}
   labels:
     {{- include "ach.labels" . | nindent 4 }}
 spec:
@@ -25,19 +28,30 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:v{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -http.addr=:{{ .Values.service.http.port }}
+            - -admin.addr=:{{ .Values.service.admin.port }}
+          env:
+            - name: ACH_FILE_TTL
+              value: {{ .Values.files.ttl | default "60m" }}
+            - name: LOG_FORMAT
+              value: {{ .Values.logFormat | default "plain" }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+            - name: admin
+              containerPort: {{ .Values.service.admin.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /ping
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /ping
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

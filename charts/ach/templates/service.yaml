@@ -2,18 +2,21 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "ach.fullname" . }}
+  {{ with .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{ end -}}
   labels:
     {{- include "ach.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.http.port }}
-      targetPort: 8080
+      targetPort: {{ .Values.service.http.port }}
       protocol: TCP
       name: http
     - port: {{ .Values.service.admin.port }}
-      targetPort: 9090
+      targetPort: {{ .Values.service.admin.port }}
       protocol: TCP
-      name: metrics
+      name: admin
   selector:
     {{- include "ach.selectorLabels" . | nindent 4 }}
