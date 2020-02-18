@@ -4,6 +4,6 @@ all:
 
 .PHONY: lint test
 lint:
-	find ./charts -type d -maxdepth 1 -mindepth 1 | xargs -n1 helm lint
+	find ./charts -maxdepth 1 -mindepth 1 -type d | xargs -n1 helm lint
 
 test: lint

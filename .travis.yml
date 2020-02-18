@@ -1,5 +1,6 @@
 before_script:
   - curl -L https://git.io/get_helm.sh | bash
+  - helm version
 
 script:
   - make test
