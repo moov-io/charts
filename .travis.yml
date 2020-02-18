@@ -6,5 +6,6 @@ script:
   - for dir in "${CHART_PATHS[@]}" \
      do \
        echo "$dir" \
+       helm lint "$dir" \
      done
   - echo "done"
