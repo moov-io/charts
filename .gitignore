@@ -1,3 +1,6 @@
 tmp/
 .charts
 .DS_Store
+
+/kubeval
+/kubeval-*.tar.gz
