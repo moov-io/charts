@@ -16,6 +16,7 @@ render: kubeval-setup
 		find "$$tmp" -type f -name "*.yaml" | xargs -n1 cat; \
 		echo "---"; \
 		find "$$tmp" -type f -name "*.yaml" | xargs -n1 ./kubeval --strict -v 1.14.7; \
+		rm -rf "$$tmp"; \
 	done
 
 kubeval-setup:
