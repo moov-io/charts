@@ -1,11 +1,5 @@
 before_script:
-  - CHART_PATHS=$(find ./charts -type d -maxdepth 1 -mindepth 1)
+  - curl -L https://git.io/get_helm.sh | bash
 
 script:
-  - echo "$CHART_PATHS"
-  - for dir in "${CHART_PATHS[@]}" \
-     do \
-       echo "$dir" \
-       helm lint "$dir" \
-     done
-  - echo "done"
+  - make test
