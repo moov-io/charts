@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ach
-description: A Helm chart for deploy Moov ACH
+description: A Helm chart for deploying Moov ACH
 
 keywords:
   - ach
