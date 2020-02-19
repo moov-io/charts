@@ -41,6 +41,7 @@ integration-setup: setup integration-install
 	./kind create cluster --wait 2m
 
 integration-cleanup:
+	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl get pods
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
 		KUBECONFIG=$(shell ./kind get kubeconfig-path) \
