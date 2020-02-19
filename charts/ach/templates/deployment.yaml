@@ -38,6 +38,16 @@ spec:
               value: {{ .Values.files.ttl | default "60m" }}
             - name: LOG_FORMAT
               value: {{ .Values.logFormat | default "plain" }}
+            - name: HTTPS_CERT_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-tls-cert
+                  key: cert
+            - name: HTTPS_KEY_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-tls-cert
+                  key: key
           ports:
             - name: http
               containerPort: {{ .Values.service.http.port }}
