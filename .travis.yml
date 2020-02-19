@@ -15,5 +15,4 @@ script:
   - make test
 
 after_script:
-  - make integration-cleanup
   - make integration-destroy

@@ -55,7 +55,6 @@ integration:
 	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl cluster-info
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./kind get kubeconfig-path) \
-		helm install "$$name" ./charts/"$$name"/ --wait --debug && \
-		helm test "$$name" --timeout=30s; \
+		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm install "$$name" ./charts/"$$name" --wait --debug; \
+		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm test "$$name" --timeout=30s; \
 	done
