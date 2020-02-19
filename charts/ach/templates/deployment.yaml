@@ -2,9 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "ach.fullname" . }}
-  {{ with .Values.namespace }}
   namespace: {{ .Values.namespace }}
-  {{ end -}}
   labels:
     {{- include "ach.labels" . | nindent 4 }}
 spec:
