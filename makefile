@@ -39,14 +39,13 @@ integration-install:
 
 integration-setup: setup integration-install
 	./kind create cluster --wait 2m
+	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl create namespace apps
 
 integration-cleanup:
-	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl get pods
+	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl get pods -n apps
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./kind get kubeconfig-path) \
-		./kubectl delete pods "$$name"-test-connection && \
-		helm uninstall "$$name"; \
+		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm uninstall "$$name"; \
 	done
 
 integration-destroy: integration-cleanup
