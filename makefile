@@ -45,7 +45,7 @@ integration-cleanup:
 		name=$$(basename "$$dir"); \
 		KUBECONFIG=$(shell ./kind get kubeconfig-path) \
 		helm uninstall "$$name" && \
-		kubectl delete pods "$$name"-test-connection; \
+		./kubectl delete pods "$$name"-test-connection; \
 	done
 
 integration-destroy: integration-cleanup
