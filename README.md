@@ -31,6 +31,21 @@ wrote /var/folders/k3/pby7w8cn6xs_l3lrhz54vw5r0000gn/T/tmp.3MaxRFw9/ach/template
 PASS - ach/templates/deployment.yaml contains a valid Deployment
 ```
 
+#### Integration testing
+
+We use [Kind](https://github.com/kubernetes-sigs/kind) (Kubernetes IN Docker) to launch a cluster where the helm charts are installed into.
+
+```
+# Integration testing
+$ make integration-setup
+$ make integration
+
+# Cleanup test cluster
+$ make integration-destroy
+```
+
+Note: To rapidly test changes to a chart use `make integration-cleanup && make integration`
+
 ### Getting Help
 
  channel | info
