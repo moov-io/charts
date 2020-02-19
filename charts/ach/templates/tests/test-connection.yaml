@@ -11,8 +11,12 @@ metadata:
     "helm.sh/hook": test-success
 spec:
   containers:
-    - name: wget
+    - name: http
       image: busybox
       command: ['wget']
       args: ['{{ include "ach.fullname" . }}:{{ .Values.service.http.port }}/files']
+    - name: admin
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "ach.fullname" . }}:{{ .Values.service.admin.port }}/metrics']
   restartPolicy: Never

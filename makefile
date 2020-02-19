@@ -48,7 +48,7 @@ integration-cleanup:
 		kubectl delete pods "$$name"-test-connection; \
 	done
 
-integration-destroy:
+integration-destroy: integration-cleanup
 	./kind delete cluster
 
 integration:
@@ -57,5 +57,5 @@ integration:
 		name=$$(basename "$$dir"); \
 		KUBECONFIG=$(shell ./kind get kubeconfig-path) \
 		helm install "$$name" ./charts/"$$name"/ --wait --debug && \
-		helm test "$$name" --timeout=30s --logs; \
+		helm test "$$name" --timeout=30s; \
 	done
