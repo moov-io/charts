@@ -4,3 +4,6 @@ tmp/
 
 /kubeval
 /kubeval-*.tar.gz
+/kind
+/kind-*
+/kubectl

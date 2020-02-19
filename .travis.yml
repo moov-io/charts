@@ -1,6 +1,19 @@
+sudo: required
+
+services:
+  - docker
+
+os:
+  - linux
+
 before_script:
-  - curl -L https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  - make setup
   - helm version
+  - make integration-setup
 
 script:
   - make test
+
+after_script:
+  - make integration-cleanup
+  - make integration-destroy
