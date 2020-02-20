@@ -31,7 +31,11 @@ spec:
           args:
             - -http.addr=:{{ .Values.service.http.port }}
             - -admin.addr=:{{ .Values.service.admin.port }}
-          env: # TODO(adam): mysql env variables
+          env:
+            # Misc Server
+            - name: LOG_FORMAT
+              value: {{ .Values.logFormat }}
+            # HTTP Server
             - name: HTTPS_CERT_FILE
               valueFrom:
                 secretKeyRef:
@@ -42,6 +46,48 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-tls-cert
                   key: key
+            - name: BASE_PATH
+              value: {{ .Values.http.basePath }}
+            - name: HTTP_BIND_ADDRESS
+              value: {{ .Values.http.bindAddress }}
+            - name: WEB_ROOT
+              value: {{ .Values.http.webRoot }}
+            - name: HTTP_ADMIN_BIND_ADDRESS
+              value: {{ .Values.admin.bindAddress }}
+            # Downloading
+            - name: DATA_REFRESH_INTERVAL
+              value: {{ .Values.data.refreshInterval }}
+            - name: INITIAL_DATA_DIRECTORY
+              value: {{ .Values.data.directory }}
+            - name: OFAC_DOWNLOAD_TEMPLATE
+              value: {{ .Values.ofac.downloadTemplate }}
+            - name: DPL_DOWNLOAD_TEMPLATE
+              value: {{ .Values.dpl.downloadTemplate }}
+            - name: CSL_DOWNLOAD_TEMPLATE
+              value: {{ .Values.csl.downloadTemplate }}
+            # Indexing
+            - name: KEEP_STOPWORDS
+              value: {{ .Values.indexing.keepStopwords | quote }}
+            - name: DEBUG_NAME_PIPELINE
+              value: {{ .Values.indexing.debugNamePipeline | quote }}
+            # Webhooks
+            - name: WEBHOOK_BATCH_SIZE
+              value: {{ .Values.webhooks.batchSize | quote }}
+            # Database
+            - name: DATABASE_TYPE
+              value: {{ .Values.database.type }}
+            - name: MYSQL_ADDRESS
+              value: {{ .Values.database.mysql.address }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.database.mysql.database }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.database.mysql.password }} # TODO(adam): read from secret?
+            - name: MYSQL_USER
+              value: {{ .Values.database.mysql.username }} # TODO(adam): read from secret?
+            - name: MYSQL_TIMEOUT
+              value: {{ .Values.database.mysql.timeout }}
+            - name: SQLITE_DB_PATH
+              value: {{ .Values.database.sqlite.path }}
           ports:
             - containerPort: 8080
               name: http
