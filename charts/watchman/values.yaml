@@ -6,6 +6,42 @@ replicaCount: 1
 
 namespace: apps
 
+http:
+  basePath: "/"
+  bindAddress: ""
+  webRoot: "/watchman/"
+admin:
+  bindAddress: ""
+
+data:
+  refreshInterval: ""
+  directory: ""
+
+ofac:
+  downloadTemplate: ""
+dpl:
+  downloadTemplate: ""
+csl:
+  downloadTemplate: ""
+
+indexing:
+  keepStopwords: "false"
+  debugNamePipeline: "false"
+
+webhooks:
+  batchSize: ""
+
+database:
+  type: ""
+  sqlite:
+    path: ""
+  mysql:
+    address: ""
+    database: ""
+    username: ""
+    password: ""
+    timeout: ""
+
 image:
   repository: moov/watchman
   pullPolicy: Always
