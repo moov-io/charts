@@ -14,6 +14,39 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+ofac:
+  endpoint: ""
+  matchThreshold: "0.99"
+
+storage:
+  bucketName: ""
+  cloudProvider: ""
+  aws:
+    region: ""
+    accessKey: ""
+    secretAccessKey: ""
+  gcp:
+    credentials: ""
+    resourceID: ""
+  file:
+    baseUrl: ""
+    hmacSecret: ""
+    key: ""
+  vault:
+    token: ""
+    serverUrl: ""
+
+database:
+  type: ""
+  sqlite:
+    path: ""
+  mysql:
+    address: ""
+    database: ""
+    username: ""
+    password: ""
+    timeout: ""
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
