@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "paygate.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "paygate.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "paygate.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "paygate.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "paygate.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:v{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - -http.addr=:{{ .Values.service.http.port }}
+            - -admin.addr=:{{ .Values.service.admin.port }}
+          env:
+            - name: LOG_FORMAT
+              value: {{ .Values.logFormat }}
+            - name: HTTPS_CERT_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-tls-cert
+                  key: cert
+            - name: HTTPS_KEY_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-tls-cert
+                  key: key
+            - name: ACH_ENDPOINT
+              value: {{ .Values.ach.endpoint }}
+            - name: ACCOUNTS_ENDPOINT
+              value: {{ .Values.accounts.endpoint }}
+            - name: ACCOUNTS_CALLS_DISABLED
+              value: {{ if .Values.accounts.disabled }} yes {{ end }}
+            - name: CUSTOMERS_ENDPOINT
+              value: {{ .Values.customers.endpoint }}
+            - name: CUSTOMERS_CALLS_DISABLED
+              value: {{ if .Values.customers.disabled }} yes {{ end }}
+            - name: FED_ENDPOINT
+              value: {{ .Values.fed.endpoint }}
+            - name: ACH_FILE_BATCH_SIZE
+              value: {{ .Values.ach.batch.size | quote }}
+            - name: ACH_FILE_MAX_LINES
+              value: {{ .Values.ach.maxLines | quote }}
+            - name: ACH_FILE_TRANSFER_INTERVAL
+              value: {{ .Values.ach.filetransfers.interval }}
+            - name: ACH_FILE_STORAGE_DIR
+              value: {{ .Values.ach.storage.path }}
+            - name: UPDATE_DEPOSITORIES_FROM_CHANGE_CODE
+              value: {{ if .Values.depositories.updateFromChangeCode }} yes {{ end }}
+            - name: FTP_DIAL_TIMEOUT
+              value: {{ .Values.ftp.timeout }}
+            - name: FTP_DIAL_WITH_DISABLED_ESPV
+              value: {{ .Values.ftp.dialWithDisabledESPV | quote }}
+            - name: SFTP_DIAL_TIMEOUT
+              value: {{ .Values.sftp.timeout }}
+            - name: SFTP_MAX_CONNS_PER_FILE
+              value: {{ .Values.sftp.maxConnectionsPerFile | quote }}
+            - name: SFTP_MAX_PACKET_SIZE
+              value: {{ .Values.sftp.dialWithDisabledESPV }}
+            - name: ODFI_ACCOUNT_NUMBER
+              value: {{ .Values.depositories.odfi.accountNumber }}
+            - name: ODFI_ACCOUNT_TYPE
+              value: {{ .Values.depositories.odfi.accountType }}
+            - name: ODFI_BANK_NAME
+              value: {{ .Values.depositories.odfi.bankName }}
+            - name: ODFI_HOLDER
+              value: {{ .Values.depositories.odfi.holder }}
+            - name: ODFI_IDENTIFICATION
+              value: {{ .Values.depositories.odfi.identification }}
+            - name: ODFI_ROUTING_NUMBER
+              value: {{ .Values.depositories.odfi.routingNumber }}
+            - name: SECRETS_LOCAL_BASE64_KEY
+              value: {{ .Values.secrets.local.key }}
+            # Database
+            - name: DATABASE_TYPE
+              value: {{ .Values.database.type }}
+            - name: MYSQL_ADDRESS
+              value: {{ .Values.database.mysql.address }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.database.mysql.database }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.database.mysql.password }} # TODO(adam): read from secret?
+            - name: MYSQL_USER
+              value: {{ .Values.database.mysql.username }} # TODO(adam): read from secret?
+            - name: MYSQL_TIMEOUT
+              value: {{ .Values.database.mysql.timeout }}
+            - name: SQLITE_DB_PATH
+              value: {{ .Values.database.sqlite.path }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+            - name: admin
+              containerPort: {{ .Values.service.admin.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
