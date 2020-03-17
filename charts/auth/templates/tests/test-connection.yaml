@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "auth.fullname" . }}-test-connection"
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "auth.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: http
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "auth.fullname" . }}:{{ .Values.service.http.port }}/ping']
+    - name: admin
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "auth.fullname" . }}:{{ .Values.service.admin.port }}/metrics']
+  restartPolicy: Never
