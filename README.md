@@ -14,9 +14,6 @@ $ cd charts/ach/
 $ helm install --debug --dry-run .
 ```
 
-TODO(adam): write docs
-
-
 ### Testing
 
 To run included tests run:
@@ -26,7 +23,6 @@ To run included tests run:
 $ make test
 ...
 wrote /var/folders/k3/pby7w8cn6xs_l3lrhz54vw5r0000gn/T/tmp.3MaxRFw9/ach/templates/deployment.yaml
-
 ...
 PASS - ach/templates/deployment.yaml contains a valid Deployment
 ```
