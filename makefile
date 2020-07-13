@@ -18,12 +18,12 @@ render: kubeval-setup
 		helm template "$$name" charts/"$$name"/ --output-dir "$$tmp"; \
 		find "$$tmp" -type f -name "*.yaml" | xargs -n1 cat; \
 		echo "---"; \
-		find "$$tmp" -type f -name "*.yaml" | xargs -n1 ./kubeval --strict -v 1.14.7; \
+		find "$$tmp" -type f -name "*.yaml" | xargs -n1 ./kubeval --strict -v 1.16.4; \
 		rm -rf "$$tmp"; \
 	done
 
 kubeval-setup:
-	wget -nc https://github.com/instrumenta/kubeval/releases/download/0.14.0/kubeval-$(PLATFORM)-amd64.tar.gz
+	wget -nc https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-$(PLATFORM)-amd64.tar.gz
 	tar -xf kubeval-$(PLATFORM)-amd64.tar.gz kubeval && chmod +x ./kubeval
 
 test: lint render integration
