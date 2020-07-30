@@ -16,67 +16,6 @@ fullnameOverride: ""
 
 logFormat: ""
 
-ach:
-  endpoint: ""
-  batch:
-    size: 100
-  maxLines: 10000
-  storage:
-    path: ""
-  filetransfers:
-    interval: 10m
-
-depositories:
-  updateFromChangeCode: false
-  odfi:
-    accountNumber: ""
-    accountType: ""
-    bankName: ""
-    holder: ""
-    identification: ""
-    routingNumber: ""
-
-secrets:
-  local:
-    key: ""
-
-ftp:
-  timeout: 10s
-  dialWithDisabledESPV: false
-
-sftp:
-  timeout: 10s
-  maxConnectionsPerFile: 8
-  maxPacketSize: 20480
-
-accounts:
-  endpoint: ""
-  disabled: ""
-
-customers:
-  endpoint: ""
-  disabled: false
-
-fed:
-  endpoint: ""
-
-admin:
-  bindAddress: ""
-
-http:
-  bindAddress: ""
-
-database:
-  type: ""
-  sqlite:
-    path: ""
-  mysql:
-    address: ""
-    database: ""
-    username: ""
-    password: ""
-    timeout: ""
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
