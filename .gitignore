@@ -2,8 +2,8 @@ tmp/
 .charts
 .DS_Store
 
-/kubeval
-/kubeval-*.tar.gz
-/kind
-/kind-*
-/kubectl
+/bin/kubeval
+/bin/kind
+/bin/kind-*
+/bin/kubectl
+kubeval-*.tar.gz

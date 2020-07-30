@@ -10,7 +10,7 @@ Kubernetes Helm Charts for the Moov ecosystem. All charts are in incubation phas
 To test a chart locally without applying it to kubernetes, do:
 
 ```
-$ cd charts/ach/
+$ cd stable/ach/
 $ helm install --debug --dry-run .
 ```
 

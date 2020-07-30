@@ -1,4 +1,4 @@
-CHART_DIRS=$(shell find ./charts -maxdepth 1 -mindepth 1 -type d)
+CHART_DIRS=$(shell find ./stable -maxdepth 1 -mindepth 1 -type d)
 PLATFORM=$(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 all: test
@@ -6,6 +6,7 @@ all: test
 .PHONY: setup lint render kubeval-setup integration
 
 setup:
+	@mkdir -p ./bin/
 	curl -L https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 lint:
@@ -15,16 +16,20 @@ render: kubeval-setup
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
 		tmp=$(shell mktemp -d); \
-		helm template "$$name" charts/"$$name"/ --output-dir "$$tmp"; \
+		helm template "$$name" stable/"$$name"/ --output-dir "$$tmp"; \
 		find "$$tmp" -type f -name "*.yaml" | xargs -n1 cat; \
 		echo "---"; \
-		find "$$tmp" -type f -name "*.yaml" | xargs -n1 ./kubeval --strict -v 1.16.4; \
+		find "$$tmp" -type f -name "*.yaml" | xargs -n1 ./bin/kubeval --strict -v 1.16.4; \
 		rm -rf "$$tmp"; \
 	done
 
 kubeval-setup:
-	wget -nc https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-$(PLATFORM)-amd64.tar.gz
-	tar -xf kubeval-$(PLATFORM)-amd64.tar.gz kubeval && chmod +x ./kubeval
+	@mkdir -p ./bin/
+	wget -O kubeval.tar.gz https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-$(PLATFORM)-amd64.tar.gz
+	tar -xf kubeval.tar.gz kubeval
+	mv kubeval ./bin/kubeval
+	chmod +x ./bin/kubeval
+	rm kubeval*.tar.gz
 
 test: lint render integration
 
@@ -32,29 +37,28 @@ clean: integration-cleanup
 
 integration-install:
 	@mkdir -p ./bin/
-	wget -nc https://storage.googleapis.com/kubernetes-release/release/$(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$(PLATFORM)/amd64/kubectl
-	wget -nc https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-$(PLATFORM)-amd64
-	ln -f -s ./kind-$(PLATFORM)-amd64 ./kind
-	chmod +x ./kubectl ./kind
+	wget -O ./bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$(PLATFORM)/amd64/kubectl
+	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-$(PLATFORM)-amd64
+	chmod +x ./bin/kubectl ./bin/kind
 
 integration-setup: setup integration-install
-	./kind create cluster --wait 2m
-	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl create namespace apps
+	./bin/kind create cluster --wait 2m
+	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl create namespace apps
 
 integration-cleanup:
-	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl get pods -n apps
+	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl get pods -n apps
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm uninstall "$$name"; \
+		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm uninstall "$$name"; \
 	done
 
 integration-destroy: integration-cleanup
-	./kind delete cluster
+	./bin/kind delete cluster
 
 integration:
-	KUBECONFIG=$(shell ./kind get kubeconfig-path) ./kubectl cluster-info
+	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl cluster-info
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm install "$$name" ./charts/"$$name" --wait --debug; \
-		KUBECONFIG=$(shell ./kind get kubeconfig-path) helm test "$$name" --timeout=30s; \
+		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm install "$$name" ./stable/"$$name" --wait --debug; \
+		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm test "$$name" --timeout=30s; \
 	done
