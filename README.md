@@ -14,6 +14,20 @@ $ cd stable/ach/
 $ helm install --debug --dry-run .
 ```
 
+#### OpenShift Images
+
+We host images for OpenShift built from their Universal Base Image (UBI) on Quay.io for download.
+
+| Service | Docker Hub | Quay.io |
+|-----|------|-----|
+| moov-io/ach | `moov/ach` | `quay.io/moov/ach` |
+| moov-io/fed | `moov/fed` | `quay.io/moov/fed` |
+| moov-io/imagecashletter | `moov/imagecashletter` | `quay.io/moov/imagecashletter` |
+| moov-io/watchman | `moov/watchman` | `quay.io/moov/watchman` |
+| moov-io/wire | `moov/wire` | `quay.io/moov/wire` |
+
+This would mean calling `helm install` with the following override `--set image.repository=quay.io/moov/ach` for ACH.
+
 ### Testing
 
 To run included tests run:
