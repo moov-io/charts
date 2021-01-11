@@ -1,0 +1,26 @@
+name: Helm Charts
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  build:
+    name: Test Charts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: make integration-install
+
+      - name: Setup
+        run: make integration-setup
+
+      - name: Test
+        run: make test
+
+      - name: Cleanup
+        run: make integration-destroy
