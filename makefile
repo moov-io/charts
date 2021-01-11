@@ -38,27 +38,27 @@ clean: integration-cleanup
 integration-install:
 	@mkdir -p ./bin/
 	wget -O ./bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$(PLATFORM)/amd64/kubectl
-	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-$(PLATFORM)-amd64
+	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.9.0/kind-$(PLATFORM)-amd64
 	chmod +x ./bin/kubectl ./bin/kind
 
 integration-setup: setup integration-install
 	./bin/kind create cluster --wait 2m
-	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl create namespace apps
+	./bin/kubectl create namespace apps
 
 integration-cleanup:
-	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl get pods -n apps
+	./bin/kubectl get pods -n apps
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm uninstall "$$name"; \
+		helm uninstall "$$name"; \
 	done
 
 integration-destroy: integration-cleanup
 	./bin/kind delete cluster
 
 integration:
-	KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) ./bin/kubectl cluster-info
+	./bin/kubectl cluster-info
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm install "$$name" ./stable/"$$name" --wait --debug; \
-		KUBECONFIG=$(shell ./bin/kind get kubeconfig-path) helm test "$$name" --timeout=30s; \
+		helm install "$$name" ./stable/"$$name" --wait --debug; \
+		helm test "$$name" --timeout=30s; \
 	done
