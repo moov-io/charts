@@ -1,4 +1,4 @@
-name: Helm Charts
+name: OpenShift Charts
 
 on:
   push:
@@ -13,14 +13,14 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Install
-        run: make integration-install
+      - name: Test
+        run: make test
 
       - name: Setup
         run: make integration-setup
 
-      - name: Test
-        run: make test
+      - name: Integration
+        run: make integration-openshift
 
       - name: Cleanup
         run: make integration-destroy
