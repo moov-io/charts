@@ -31,7 +31,7 @@ kubeval-setup:
 	chmod +x ./bin/kubeval
 	rm kubeval*.tar.gz
 
-test: lint render integration
+test: lint render
 
 clean: integration-cleanup
 
@@ -45,6 +45,22 @@ integration-setup: setup integration-install
 	./bin/kind create cluster --wait 2m
 	./bin/kubectl create namespace apps
 
+integration-docker-hub:
+	./bin/kubectl cluster-info
+	for dir in $(CHART_DIRS); do \
+		name=$$(basename "$$dir"); \
+		helm install --set image.repository=quay.io/moov/"$$name" "$$name" ./stable/"$$name" --wait --debug; \
+		helm test "$$name" --timeout=30s; \
+	done
+
+integration-openshift:
+	./bin/kubectl cluster-info
+	for dir in $(CHART_DIRS); do \
+		name=$$(basename "$$dir"); \
+		helm install --set image.repository=quay.io/moov/"$$name" "$$name" ./stable/"$$name" --wait --debug; \
+		helm test "$$name" --timeout=30s; \
+	done
+
 integration-cleanup:
 	./bin/kubectl get pods -n apps
 	for dir in $(CHART_DIRS); do \
@@ -54,11 +70,3 @@ integration-cleanup:
 
 integration-destroy: integration-cleanup
 	./bin/kind delete cluster
-
-integration:
-	./bin/kubectl cluster-info
-	for dir in $(CHART_DIRS); do \
-		name=$$(basename "$$dir"); \
-		helm install "$$name" ./stable/"$$name" --wait --debug; \
-		helm test "$$name" --timeout=30s; \
-	done
