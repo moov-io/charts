@@ -49,7 +49,7 @@ integration-docker-hub:
 	./bin/kubectl cluster-info
 	for dir in $(CHART_DIRS); do \
 		name=$$(basename "$$dir"); \
-		helm install --set image.repository=quay.io/moov/"$$name" "$$name" ./stable/"$$name" --wait --debug; \
+		helm install "$$name" ./stable/"$$name" --wait --debug; \
 		helm test "$$name" --timeout=30s; \
 	done
 
