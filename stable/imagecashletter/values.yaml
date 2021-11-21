@@ -8,6 +8,7 @@ namespace: apps
 
 image:
   repository: moov/imagecashletter
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: []

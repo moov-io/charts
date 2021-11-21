@@ -8,6 +8,7 @@ namespace: apps
 
 image:
   repository: moov/fed
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: []
