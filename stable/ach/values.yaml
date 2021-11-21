@@ -8,6 +8,7 @@ namespace: apps
 
 image:
   repository: moov/ach
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: []

@@ -44,6 +44,7 @@ database:
 
 image:
   repository: moov/watchman
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: []

@@ -8,6 +8,7 @@ namespace: apps
 
 image:
   repository: moov/wire
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: []
