@@ -22,5 +22,10 @@ jobs:
       - name: Integration
         run: make integration-openshift
 
+      - name: Describe
+        if: ${{ failure() }}
+        run: kubectl describe pods -n apps
+
       - name: Cleanup
+        if: ${{ always() }}
         run: make integration-destroy
