@@ -25,7 +25,7 @@ render: kubeval-setup
 
 kubeval-setup:
 	@mkdir -p ./bin/
-	wget -O kubeval.tar.gz https://github.com/instrumenta/kubeval/releases/download/0.15.0/kubeval-$(PLATFORM)-amd64.tar.gz
+	wget -O kubeval.tar.gz https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-$(PLATFORM)-amd64.tar.gz
 	tar -xf kubeval.tar.gz kubeval
 	mv kubeval ./bin/kubeval
 	chmod +x ./bin/kubeval
@@ -38,7 +38,7 @@ clean: integration-cleanup
 integration-install:
 	@mkdir -p ./bin/
 	wget -O ./bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$(PLATFORM)/amd64/kubectl
-	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.9.0/kind-$(PLATFORM)-amd64
+	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-$(PLATFORM)-amd64
 	chmod +x ./bin/kubectl ./bin/kind
 
 integration-setup: setup integration-install
