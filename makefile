@@ -38,7 +38,7 @@ clean: integration-cleanup
 integration-install:
 	@mkdir -p ./bin/
 	wget -O ./bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/$(PLATFORM)/amd64/kubectl
-	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-$(PLATFORM)-amd64
+	wget -O ./bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.14.0/kind-$(PLATFORM)-amd64
 	chmod +x ./bin/kubectl ./bin/kind
 
 integration-setup: setup integration-install
