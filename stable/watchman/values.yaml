@@ -97,11 +97,23 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 200m
+  #   memory: 400Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi
+  #   memory: 200Mi
+
+livenessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 5
+
+readinessProbe: 
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 5
 
 nodeSelector: {}
 
